@@ -1,0 +1,31 @@
+#Mise en place de nginx#
+nginx-%USER%:
+  restart: always
+  image: wonderfall/boring-nginx
+  container_name: nginx-%USER%
+  ports:
+    - "80:8000"
+    - "443:4430"
+  volumes:
+    - /dockers/nginx/sites-enabled:/sites-enabled
+    - /dockers/nginx/conf:/conf.d
+    - /dockers/nginx/log:/var/log/nginx
+    - /dockers/nginx/certs:/certs
+#ENDnginx#
+
+flood-%USER%:
+  restart: always
+  image: wonderfall/rtorrent-flood
+  container_name: flood-%USER%
+  environment:
+    - UID=%UID%
+    - GID=%GID%
+    - FLOOD_SECRET=%SECRET%
+    - CONTEXT_PATH=/
+    - RTORRENT_SCGI=0
+  ports:
+    - %PORT%:3000
+    - 49184:49184
+  volumes:
+    - /home/%USER%/downloads:/data
+    - /home/%USER%/dockers/flood/flooddb:/flood-db
